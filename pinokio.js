@@ -1,7 +1,7 @@
 module.exports = {
   version: "5.0",
-  title: "LFM2.5-450M-VL",
-  description: "LFM2.5-VL-450M (Liquid AI): compact image-language model (no native video support). Upload an image or image URL and run vision chat. Video is supported by sampling frames and feeding them as images — choose one combined answer or stream one reply per frame. Optional sliders for max_new_tokens, temperature, min_p, and repetition_penalty.",
+  title: "LFM3-VL-2B",
+  description: "LFM3-VL-2B (Liquid AI): vision-language model with step-by-step reasoning. Upload an image or image URL and run vision chat. Video is supported by sampling frames and feeding them as images — choose one combined answer or stream one reply per frame. Optional sliders for max_new_tokens, temperature, min_p, and repetition_penalty.",
   icon: "icon.jpeg",
   menu: async (kernel, info) => {
     let installed = info.exists("env")

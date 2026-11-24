@@ -25,7 +25,7 @@ module.exports = {
     {
       method: "notify",
       params: {
-        html: "Installation complete! Click 'Start' to launch LFM2.5-VL-450M (Gradio). The model downloads from Hugging Face on first run."
+        html: "Installation complete! Click 'Start' to launch LFM3-VL-2B (Gradio). The model downloads from Hugging Face on first run."
       }
     }
   ]

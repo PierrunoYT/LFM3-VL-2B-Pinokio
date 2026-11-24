@@ -1,5 +1,5 @@
 {
-  "title": "LFM2.5-450M-VL",
-  "description": "LFM2.5-VL-450M (Liquid AI): compact vision–language model for image understanding. Gradio UI with image upload/URL or video (sampled frames), prompt, and generation sliders.",
+  "title": "LFM3-VL-2B",
+  "description": "LFM3-VL-2B (Liquid AI): vision–language model for image understanding. Gradio UI with image upload/URL or video (sampled frames), prompt, and generation sliders.",
   "icon": "icon.jpeg"
 }

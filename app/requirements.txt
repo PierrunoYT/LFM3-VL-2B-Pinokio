@@ -1,6 +1,6 @@
 gradio>=6.0.0,<7
 torch
-transformers>=5.1.0
+transformers>=5.21.0
 accelerate
 pillow
 opencv-python-headless

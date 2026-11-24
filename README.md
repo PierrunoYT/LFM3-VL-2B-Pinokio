@@ -1,11 +1,11 @@
-# LFM2.5-VL-450M (Pinokio)
+# LFM3-VL-2B (Pinokio)
 
-[Pinokio](https://pinokio.computer/) launcher and **Gradio** front-end for **[LiquidAI/LFM2.5-VL-450M](https://huggingface.co/LiquidAI/LFM2.5-VL-450M)** — a compact **image**-language model by Liquid AI. The app loads the model with **Hugging Face Transformers** (`AutoModelForImageTextToText` + `AutoProcessor`), uses **Accelerate** `device_map="auto"`, and prefers **bfloat16** on CUDA.
+[Pinokio](https://pinokio.computer/) launcher and **Gradio** front-end for **[LiquidAI/LFM3-VL-2B](https://huggingface.co/LiquidAI/LFM3-VL-2B)** — a 1.9B vision-language model by Liquid AI that reasons in a `<think>` block before answering (the app shows only the final answer). The app loads the model with **Hugging Face Transformers** (`AutoModelForImageTextToText` + `AutoProcessor`), uses **Accelerate** `device_map="auto"`, loads with `trust_remote_code=True`, and prefers **bfloat16** on CUDA.
 
 ## Features
 
 - **Vision chat**: Upload an image (or paste an **image URL**), enter a text prompt, and generate a response.
-- **Video (frame sampling)**: The model has no native video support — it is an image-language model. Video input is handled by evenly sampling frames and feeding them as individual images, which matches how Liquid's own WebGPU demo works. Choose **combined** (all frames in one prompt) or **stream per frame** (one generation per frame, output updates live). Use **Max frames from video** to control VRAM usage and runtime.
+- **Video (frame sampling)**: Video input is handled by evenly sampling frames and feeding them as individual images, which matches how Liquid's own WebGPU demo works. Choose **combined** (all frames in one prompt) or **stream per frame** (one generation per frame, output updates live). Use **Max frames from video** to control VRAM usage and runtime.
 - **Advanced generation**: Optional sliders for `max_new_tokens`, `temperature`, `min_p`, and `repetition_penalty` (see **Advanced generation settings** in the UI).
 - **Local Gradio UI**: Runs on `127.0.0.1` by default; exposes the usual Gradio **REST API** and `/docs` when the server is up.
 
@@ -76,5 +76,5 @@ While the app is running:
 ## License and credits
 
 - **App code**: There is no `LICENSE` file in the repo root yet; confirm terms before you redistribute or reuse the launcher/app code.
-- **Model**: Terms are defined on the [model card](https://huggingface.co/LiquidAI/LFM2.5-VL-450M) (Liquid AI / Hugging Face).
+- **Model**: Terms are defined on the [model card](https://huggingface.co/LiquidAI/LFM3-VL-2B) (LFM Open License v1.0).
 - **Stack**: [Gradio](https://gradio.app/), [Transformers](https://github.com/huggingface/transformers), [Pinokio](https://pinokio.computer/).
