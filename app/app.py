@@ -10,7 +10,7 @@ from transformers import AutoModelForImageTextToText, AutoProcessor
 from transformers.image_utils import load_image
 
 
-MODEL_ID = "LiquidAI/LFM2.5-VL-450M"
+MODEL_ID = "LiquidAI/LFM3-VL-2B"
 
 model = None
 processor = None
@@ -32,8 +32,9 @@ def load_models() -> None:
         MODEL_ID,
         device_map="auto",
         dtype=_model_dtype(),
+        trust_remote_code=True,
     )
-    processor = AutoProcessor.from_pretrained(MODEL_ID)
+    processor = AutoProcessor.from_pretrained(MODEL_ID, trust_remote_code=True)
 
     image_processor = getattr(processor, "image_processor", None)
     if image_processor is not None:
@@ -242,9 +243,17 @@ def _generate_reply(
         generate_kwargs.pop("min_p")
         outputs = model.generate(**inputs, **generate_kwargs)
 
-    return processor.batch_decode(outputs[:, input_len:], skip_special_tokens=True)[
-        0
-    ].strip()
+    generated = outputs[0, input_len:].tolist()
+    # The model thinks in a <think>...</think> block before answering; the
+    # prompt already opens it, so show only what follows the closing tag.
+    end_think = processor.tokenizer.convert_tokens_to_ids("</think>")
+    if end_think in generated:
+        last = len(generated) - 1 - generated[::-1].index(end_think)
+        return processor.decode(generated[last + 1 :], skip_special_tokens=True).strip()
+    text = processor.decode(generated, skip_special_tokens=True).strip()
+    if "</think>" in text:
+        return text.rsplit("</think>", 1)[1].strip()
+    return "[Reasoning did not finish; raise max_new_tokens]\n" + text
 
 
 # ---------------------------------------------------------------------------
@@ -334,12 +343,13 @@ _THEME = gr.themes.Soft(
     font=[gr.themes.GoogleFont("Inter"), "Arial", "sans-serif"],
 )
 
-with gr.Blocks(title="LFM2.5-VL-450M") as demo:
+with gr.Blocks(title="LFM3-VL-2B") as demo:
     gr.Markdown(
         """
-        # LFM2.5-VL-450M
-        Compact **image**-language model by Liquid AI. It does not have native video support —
-        video is handled by evenly sampling frames and feeding them as individual images.
+        # LFM3-VL-2B
+        Vision-language model by Liquid AI. It reasons in a hidden thinking block before
+        answering; only the final answer is shown. Video is handled by evenly sampling
+        frames and feeding them as images.
 
         Upload a **video** (frames will be sampled) or an **image** (or paste an image URL), type a prompt, and click **Run**.
         For video: **combined** sends all frames in one prompt; **stream per frame** runs one generation
@@ -379,9 +389,9 @@ with gr.Blocks(title="LFM2.5-VL-450M") as demo:
             )
             with gr.Accordion("Advanced generation settings", open=False):
                 max_new_tokens_input = gr.Slider(
-                    minimum=16,
-                    maximum=1024,
-                    value=256,
+                    minimum=64,
+                    maximum=16384,
+                    value=4096,
                     step=1,
                     label="max_new_tokens",
                 )
@@ -395,14 +405,14 @@ with gr.Blocks(title="LFM2.5-VL-450M") as demo:
                 min_p_input = gr.Slider(
                     minimum=0.0,
                     maximum=1.0,
-                    value=0.15,
+                    value=0.0,
                     step=0.01,
                     label="min_p",
                 )
                 repetition_penalty_input = gr.Slider(
                     minimum=1.0,
                     maximum=2.0,
-                    value=1.05,
+                    value=1.1,
                     step=0.01,
                     label="repetition_penalty",
                 )
